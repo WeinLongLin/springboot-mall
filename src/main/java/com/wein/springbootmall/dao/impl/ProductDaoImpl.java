@@ -1,5 +1,6 @@
 package com.wein.springbootmall.dao.impl;
 
+import com.wein.springbootmall.constant.ProductCategory;
 import com.wein.springbootmall.dao.ProductDao;
 import com.wein.springbootmall.dto.ProductRequest;
 import com.wein.springbootmall.model.Product;
@@ -24,12 +25,22 @@ public class ProductDaoImpl implements ProductDao {
 
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(ProductCategory category, String search) {
 
         String sql = "SELECT product_id, product_name, category, image_url, price, stock, description, created_date, last_modified_date " +
-                "FROM product";
+                "FROM product WHERE 1=1";
 
         Map<String, Object> map = new HashMap<>();
+
+        if (category != null) {
+            sql = sql + " AND category = :category";
+            map.put("category", category.name());
+        }
+
+        if (search != null) {
+            sql = sql + " AND product_name LIKE :search";
+            map.put("search", "%" + search + "%");
+        }
 
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
 
@@ -73,7 +84,7 @@ public class ProductDaoImpl implements ProductDao {
         map.put("createdDate", now);
         map.put("lastModifiedDate", now);
 
-        KeyHolder keyHolder = new  GeneratedKeyHolder();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
 
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
 

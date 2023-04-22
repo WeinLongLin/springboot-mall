@@ -1,5 +1,6 @@
 package com.wein.springbootmall.controller;
 
+import com.wein.springbootmall.constant.ProductCategory;
 import com.wein.springbootmall.dto.ProductRequest;
 import com.wein.springbootmall.model.Product;
 import com.wein.springbootmall.service.ProductService;
@@ -18,9 +19,12 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<Product>> getProducts(
+            @RequestParam(required = false) ProductCategory category,
+            @RequestParam(required = false) String search
+    ) {
 
-        List<Product> productList = productService.getProducts();
+        List<Product> productList = productService.getProducts(category, search);
 
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
@@ -31,7 +35,7 @@ public class ProductController {
 
         Product product = productService.getProductById(productId);
 
-        if(product != null) {
+        if (product != null) {
             return ResponseEntity.status(HttpStatus.OK).body(product);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -55,7 +59,7 @@ public class ProductController {
         // 檢查 product 是否存在
         Product product = productService.getProductById(productId);
 
-        if(product == null) {
+        if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
