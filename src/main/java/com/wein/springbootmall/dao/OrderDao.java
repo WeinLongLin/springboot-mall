@@ -1,6 +1,7 @@
 package com.wein.springbootmall.dao;
 
 import com.wein.springbootmall.dto.CreateOrderRequest;
+import com.wein.springbootmall.dto.OrderQueryParams;
 import com.wein.springbootmall.model.Order;
 import com.wein.springbootmall.model.OrderItem;
 
@@ -15,4 +16,8 @@ public interface OrderDao {
     Order getOrderById(Integer orderId);
 
     List<OrderItem> getOrderItemByOrderId(Integer orderId);
+
+    Integer countOrder(OrderQueryParams orderQueryParams);
+
+    List<Order> getOrders(OrderQueryParams orderQueryParams);
 }
